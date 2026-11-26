@@ -94,6 +94,26 @@ main{flex:1 1 auto;min-height:0;overflow:auto;max-width:none;width:100%;margin:0
 .mabout{margin-top:8px}.mabout summary{cursor:pointer;color:var(--blue);font-size:13px}
 @media(max-width:1279px){.menu8{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:599px){.menu8{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* menu fills the screen */
+.homewrap{display:flex;flex-direction:column;height:100%;min-height:480px}
+.homewrap .mintro,.homewrap .mabout{flex:0 0 auto}
+.menu8{flex:1 1 auto;min-height:0;align-items:stretch;grid-template-rows:minmax(0,1fr);gap:10px}
+.mwk{display:flex;flex-direction:column;min-height:0;padding:8px;font-size:clamp(12px,min(1.25vw,2.1vh),18px)}
+.mwk h4{font-size:.8em;margin:0 0 6px;flex:0 0 auto}
+.mu{flex:1 1 0;min-height:0;max-height:110px;font-size:1em;gap:.6em;padding:2px 4px}
+.mu .n{min-width:2.4em;height:2.4em;font-size:.9em}
+.mu .t{-webkit-line-clamp:3}.mu .st{font-size:.8em}
+@media(max-width:1279px){.menu8{grid-template-rows:repeat(2,minmax(0,1fr))}.mwk{font-size:clamp(12px,min(1.9vw,1.9vh),17px)}}
+@media(max-width:599px){.homewrap{height:auto}.menu8{flex:none;grid-template-rows:none}.mu{flex:none;max-height:none;padding:6px 4px}.mwk{font-size:13px}}
+.btn.go:not(:disabled){background:#0b5cad;font-weight:700;box-shadow:0 0 0 3px #ffd28a,0 2px 6px #0b5cad55;transform:scale(1.05)}
+.btn.sec.quiet{border-color:#b3c2d6;color:#5f7391;font-weight:400}
+.mwk{font-size:clamp(10px,min(.95vw,1.7vh),15px)}
+.mwk h4{font-size:.7em;line-height:1.25;letter-spacing:.02em}
+.mu{flex:1 1 auto;max-height:none;min-height:2.6em}
+.mu .t{display:block;-webkit-line-clamp:unset;overflow:visible;font-size:.92em;line-height:1.2}
+@media(max-width:1279px){.mwk{font-size:clamp(11px,min(1.5vw,1.7vh),15px)}}
+@media(max-width:599px){.mwk{font-size:12px}}
 </style></head><body>
 <header class="top"><b>TIB SAP Controls Interview Prep</b><small id="crumb">Weeks 0 to 7</small><a class="jr" href="https://tib-job-readiness-prep.vercel.app/">Job Readiness</a><button id="homeBtn" onclick="go()">Menu</button><button id="fsBtn" onclick="fsToggle()">Full screen</button><button id="docBtn" onclick="docs()" style="display:none;margin-left:0">Guide</button><button id="dashBtn" onclick="dash()" style="display:none;margin-left:0">Instructor view</button><small id="syncW" style="display:none"><span id="sync"></span></small><button id="outBtn" onclick="signOut()" style="display:none;margin-left:0">Sign out</button></header>
 <main id="app"></main>
@@ -1335,7 +1355,7 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 function go(id,step){if(id===undefined){home();return}view(id,step||0)}
 function home(){
   $('#crumb').textContent='Weeks 0 to 7';
-  let h=`<div class="mintro"><h1>Pick a unit</h1><span class="small mut">Learn, simulate, analyse, teach back, quiz. Finish a unit to unlock the next.</span><button class="btn sec" onclick="docs('guide')">User guide</button></div><div class="menu8">`;
+  let h=`<div class="homewrap"><div class="mintro"><h1>Pick a unit</h1><span class="small mut">Learn, simulate, analyse, teach back, quiz. Finish a unit to unlock the next.</span><button class="btn sec" onclick="docs('guide')">User guide</button></div><div class="menu8">`;
   let wk=null;
   UNITS.forEach((u,i)=>{
     if(u.wk!==wk){if(wk!==null)h+='</div>';wk=u.wk;h+=`<div class="mwk"><h4>${esc(wk)}</h4>`}
@@ -1344,7 +1364,7 @@ function home(){
     h+=`<div class="mu ${d?'done':''} ${o?'':'lock'}" title="${esc(u.title)}" ${o?`onclick="go('${u.id}')"`:''}><span class="n">${d?'✓':u.id}</span><span class="t">${esc(u.title)}</span><span class="st">${o?(d?'':parts+'/4'):'🔒'}</span></div>`;
   });
   h+='</div></div>';
-  h+=`<details class="mabout"><summary>About this pilot</summary><p class="mut small">The SAP screens are a training simulation, not a live SAP system. The company, users and data are fictional. Your progress is saved to your TIB account, so you can continue on any device. Available now: Weeks 0 to 5 (the Senior track) and the Lead track, Weeks 6 and 7.</p></details>`;
+  h+=`<details class="mabout"><summary>About this pilot</summary><p class="mut small">The SAP screens are a training simulation, not a live SAP system. The company, users and data are fictional. Your progress is saved to your TIB account, so you can continue on any device. Available now: Weeks 0 to 5 (the Senior track) and the Lead track, Weeks 6 and 7.</p></details></div>`;
   app.innerHTML=h;app.scrollTop=0;
 }
 function view(id,step){
@@ -1525,7 +1545,7 @@ VIZ['3.3']={scene:[{w:'aud',t:'The duplicate invoice check is switched on. Are w
  animT:'Watch a duplicate slip through',anim:{vb:[680,290],nodes:[['a',10,30,190,48,'Posted: INV-1001|vendor 612, 5,000'],['b',10,130,190,48,'Arrives: INV1001|(no dash), 5,000','#fff4d6'],['chk',270,80,150,60,'Check: same|reference?','#fff4d6'],['pass',470,30,190,46,'Different text: posts','#fde7e4'],['pay',470,110,190,46,'Both are paid','#fde7e4'],['an',470,200,190,46,'Analysis: remove dashes,|match vendor + amount','#e3f4e8']],arrows:[['a','chk'],['b','chk'],['chk','pass'],['pass','pay'],['pay','an']],
   steps:[{t:'Invoice INV-1001 for 5,000 is posted and the vendor is paid.',show:['a']},{t:'Later the same invoice arrives as <b>INV1001</b>, with no dash.',show:['b'],hot:['b']},{t:'The check compares the reference text. The two are not identical.',show:['chk']},{t:'SAP sees a different invoice and <b>posts it</b>.',show:['pass'],hot:['pass']},{t:'The vendor is paid twice. The control looked on but did not work.',show:['pay'],hot:['pay']},{t:'The tester cleans the references (no dashes, spaces or case) and matches vendor and amount across the year. That finds it.',show:['an']}]},
  recall:['The check compares reference text','A dash or space makes it miss','So test the whole year with cleaned references','A paid duplicate means the control failed: quantify and escalate']};
-function vzAnim(id,A){return `<div class="vz" data-vz="${id}"><div class="row"><button class="btn sec" id="vzp-${id}" onclick="vzGo('${id}',-1)">Previous step</button><button class="btn" onclick="vzGo('${id}',1)" id="vzn-${id}">Next step</button><button class="btn sec" onclick="vzGo('${id}',0)">Replay</button><button class="btn" id="vzd-${id}" onclick="lpNext()" disabled>Done</button></div><div class="vzcap" id="vzc-${id}"></div>${vzSvg(A.vb,A.nodes,A.arrows)}</div>`}
+function vzAnim(id,A){return `<div class="vz" data-vz="${id}"><div class="row"><button class="btn sec" id="vzp-${id}" onclick="vzGo('${id}',-1)">Previous step</button><button class="btn go" onclick="vzGo('${id}',1)" id="vzn-${id}">Next step</button><button class="btn sec" onclick="vzGo('${id}',0)">Replay</button><button class="btn go" id="vzd-${id}" onclick="lpNext()" disabled>Done</button></div><div class="vzcap" id="vzc-${id}"></div>${vzSvg(A.vb,A.nodes,A.arrows)}</div>`}
 let VZS={};
 function vzGo(id,d){const A=VIZ[id].anim,n=A.steps.length;VZS[id]=d===0?0:Math.max(0,Math.min(n-1,(VZS[id]||0)+d));vzDraw(id)}
 function vzDraw(id){const A=VIZ[id].anim,i=VZS[id]||0,root=document.querySelector('.vz[data-vz="'+id+'"]');if(!root)return;
@@ -1856,7 +1876,7 @@ Object.assign(SEE,{
 function seeHtml(id){const S=SEE[id];if(!S)return'';SEES[id]=0;return `<details class="see" open><summary>See it in SAP</summary><div class="seeb" data-see="${id}"></div></details>`}
 function seeGo(id,d){const n=SEE[id].frames.length;SEES[id]=d===0?0:Math.max(0,Math.min(n-1,(SEES[id]||0)+d));seeDraw(id);seeOvDraw()}
 function seeDraw(id){const S=SEE[id],i=SEES[id]||0,F=S.frames[i],n=S.frames.length,r=document.querySelector('.seeb[data-see="'+id+'"]');if(!r)return;const b=F.box;
-r.innerHTML=`<div class="seet">${S.title}</div><div class="seen">Frame ${i+1} of ${n} &middot; ${F.t}</div><div class="seep">${F.s}</div><div class="seerow"><button class="btn sec" onclick="seeGo('${id}',-1)" ${i===0?'disabled':''}>Previous frame</button><button class="btn" onclick="seeGo('${id}',1)" ${i===n-1?'disabled':''}>Next frame</button><button class="btn sec" onclick="seeGo('${id}',0)">Replay</button><button class="btn sec" onclick="seeOpen('${id}')">Full screen</button><button class="btn" onclick="lpNext()" ${i===n-1?'':'disabled'}>Done</button></div><div class="seef" onclick="seeOpen('${id}')"><img src="${SEEB}${F.img}" alt="${F.cap}" onerror="this.parentNode.classList.add('bad')"><div class="seex" style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%"></div></div><div class="vzcap">${F.cap}</div><div class="seesrc">Screens from the TIB SAP Lab Player, Section 1 lab.</div>`}
+r.innerHTML=`<div class="seet">${S.title}</div><div class="seen">Frame ${i+1} of ${n} &middot; ${F.t}</div><div class="seep">${F.s}</div><div class="seerow"><button class="btn sec" onclick="seeGo('${id}',-1)" ${i===0?'disabled':''}>Previous frame</button><button class="btn go" onclick="seeGo('${id}',1)" ${i===n-1?'disabled':''}>Next frame</button><button class="btn sec" onclick="seeGo('${id}',0)">Replay</button><button class="btn sec" onclick="seeOpen('${id}')">Full screen</button><button class="btn go" onclick="lpNext()" ${i===n-1?'':'disabled'}>Done</button></div><div class="seef" onclick="seeOpen('${id}')"><img src="${SEEB}${F.img}" alt="${F.cap}" onerror="this.parentNode.classList.add('bad')"><div class="seex" style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%"></div></div><div class="vzcap">${F.cap}</div><div class="seesrc">Screens from the TIB SAP Lab Player, Section 1 lab.</div>`}
 
 let SEEO=null;
 function seeFrame(id){const S=SEE[id],i=SEES[id]||0,F=S.frames[i],b=F.box;return `<div class="seef"><img src="${SEEB}${F.img}" alt="${F.cap}" onerror="this.parentNode.classList.add('bad')"><div class="seex" style="left:${b[0]}%;top:${b[1]}%;width:${b[2]}%;height:${b[3]}%"></div></div><div class="vzcap">${F.cap}</div>`}
@@ -1879,7 +1899,7 @@ function lpSlides(u){const sl=[],id=u.id,V=VIZ[id];
  return sl}
 function lpDraw(id){const u=UNITS.find(x=>x.id===id),sl=lpSlides(u),n=sl.length,i=Math.max(0,Math.min(n-1,LP[id]||0));LP[id]=i;
  const dots=sl.map((x,k)=>`<span class="${k===i?'on':k<i?'dn':''}" title="${x.k}"></span>`).join('');
- const last=i===n-1,fwd=last?`<button class="btn" onclick="go('${id}',1)">${u.sim.length?'Next: simulate the SAP screens':'Next: practise'}</button>`:`<button class="btn" onclick="lpGo(1)">Continue</button>`;
+ const last=i===n-1,fwd=last?`<button class="btn" onclick="go('${id}',1)">${u.sim.length?'Next: simulate the SAP screens':'Next: practise'}</button>`:`<button class="btn ${(sl[i].k==='Animation'||sl[i].k==='See it in SAP')?'sec quiet':''}" onclick="lpGo(1)">Continue</button>`;
  const nav=`<div class="row lpnav"><button class="btn sec" onclick="lpGo(-1)" ${i===0?'disabled':''}>Back</button>${fwd}</div>`;
  $('#pane').innerHTML=`<div class="lpbar"><b class="lpt">Screen ${i+1} of ${n}: ${sl[i].k}</b><span class="lpdots">${dots}</span></div>${nav}${sl[i].h()}${nav}`;
  if(sl[i].after)sl[i].after();app.scrollTop=0}
