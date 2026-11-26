@@ -88,7 +88,7 @@ main{flex:1 1 auto;min-height:0;overflow:auto;max-width:none;width:100%;margin:0
 .mu{display:flex;gap:6px;align-items:center;padding:4px;border-radius:6px;cursor:pointer;border:1px solid transparent;font-size:12px;line-height:1.2}
 .mu:hover{background:#eef4fb;border-color:var(--blue)}.mu.lock{opacity:.5;cursor:not-allowed}.mu.lock:hover{background:none;border-color:transparent}
 .mu .n{flex:0 0 auto;min-width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
-.mu.done .n{background:var(--ok)}
+
 .mu .t{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mu .st{flex:0 0 auto;font-size:10px;color:var(--mut)}
 .mabout{margin-top:8px}.mabout summary{cursor:pointer;color:var(--blue);font-size:13px}
@@ -147,6 +147,8 @@ main.fit .seef img{width:auto;height:auto;max-width:100%;max-height:calc(100vh -
 main.fit .seep{font-size:clamp(13px,2.2vh,17px)}
 @media(max-width:880px){main.fit .seeb{display:block}main.fit .seef img{max-height:calc(100dvh - 430px)}main.fit .seeb>.seef{display:block;width:auto;max-width:100%}}
 @media(max-width:600px){main.fit{overflow:auto}main.fit .lpbar{flex-wrap:wrap}main.fit .lpt{white-space:normal}}
+.mu.cy .n{background:#f2c200;color:#3d2e00}.mu.cg .n{background:#1e8a4c}
+.mleg{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:5px;white-space:nowrap}.mleg i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-left:8px}.mleg .lb{background:var(--navy);margin-left:0}.mleg .ly{background:#f2c200}.mleg .lg{background:#1e8a4c}
 </style></head><body>
 <header class="top"><b>TIB SAP Controls Interview Prep</b><small id="crumb">Weeks 0 to 7</small><a class="jr" href="https://tib-job-readiness-prep.vercel.app/">Job Readiness</a><button id="homeBtn" onclick="go()">Menu</button><button id="docBtn" onclick="docs()" style="display:none;margin-left:0">Guide</button><button id="dashBtn" onclick="dash()" style="display:none;margin-left:0">Instructor view</button><small id="syncW" style="display:none"><span id="sync"></span></small><button id="outBtn" onclick="signOut()" style="display:none;margin-left:0">Sign out</button></header>
 <main id="app"></main>
@@ -1388,13 +1390,13 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 function go(id,step){if(id===undefined){home();return}view(id,step||0)}
 function home(){
   $('#crumb').textContent='Weeks 0 to 7';
-  let h=`<div class="homewrap"><div class="mintro"><h1>Pick a unit</h1><span class="small mut">Learn, simulate, analyse, teach back, quiz. Finish a unit to unlock the next.</span><button class="btn sec" onclick="docs('guide')">User guide</button></div><div class="menu8">`;
+  let h=`<div class="homewrap"><div class="mintro"><h1>Pick a unit</h1><span class="small mut">Learn, simulate, analyse, teach back, quiz. Finish a unit to unlock the next.</span><span class="mleg"><i class="lb"></i>No SAP screenshots <i class="ly"></i>Some <i class="lg"></i>All</span><button class="btn sec" onclick="docs('guide')">User guide</button></div><div class="menu8">`;
   let wk=null;
   UNITS.forEach((u,i)=>{
     if(u.wk!==wk){if(wk!==null)h+='</div>';wk=u.wk;h+=`<div class="mwk"><h4>${esc(wk)}</h4>`}
-    const o=open_(i),d=done(u);
+    const o=open_(i),d=done(u);const cv=(typeof SEE!=='undefined'&&SEE[u.id])?'cg':(['2.3','3.1','3.2','3.3','3.4'].indexOf(u.id)>=0?'cy':'');
     const parts=[simDone(u)?1:0,labDone(u)?1:0,tbDone(u)?1:0,quizDone(u)?1:0].reduce((a,b)=>a+b,0);
-    h+=`<div class="mu ${d?'done':''} ${o?'':'lock'}" title="${esc(u.title)}" ${o?`onclick="go('${u.id}')"`:''}><span class="n">${d?'✓':u.id}</span><span class="t">${esc(u.title)}</span><span class="st">${o?(d?'':parts+'/4'):'🔒'}</span></div>`;
+    h+=`<div class="mu ${cv} ${d?'done':''} ${o?'':'lock'}" title="${esc(u.title)}" ${o?`onclick="go('${u.id}')"`:''}><span class="n">${d?'✓':u.id}</span><span class="t">${esc(u.title)}</span><span class="st">${o?(d?'':parts+'/4'):'🔒'}</span></div>`;
   });
   h+='</div></div>';
   h+=`<details class="mabout"><summary>About this pilot</summary><p class="mut small">The SAP screens are a training simulation, not a live SAP system. The company, users and data are fictional. Your progress is saved to your TIB account, so you can continue on any device. Available now: Weeks 0 to 5 (the Senior track) and the Lead track, Weeks 6 and 7.</p></details></div>`;
