@@ -120,6 +120,33 @@ main{flex:1 1 auto;min-height:0;overflow:auto;max-width:none;width:100%;margin:0
 .mu{min-height:0;overflow:hidden}
 @media(max-width:1279px){.mwk{font-size:min(1.5vw,1.25vh)}}
 @media(max-width:599px){.homewrap{overflow:visible}.menu8{overflow:visible}.mwk{font-size:12px}.mu{overflow:visible}}
+
+/* fit-to-screen pages: graphics scale to the space left, no scrolling */
+main.fit{overflow:hidden;display:flex;flex-direction:column;padding-top:6px;padding-bottom:8px}
+main.fit .wkl{display:none}
+main.fit h1.utl{margin:0 0 4px;font-size:13px}
+main.fit .steps{margin:2px 0 6px}main.fit .steps button{padding:5px 6px}
+main.fit #pane{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+main.fit .lpbar{flex:0 0 auto;margin:0 0 6px;flex-wrap:nowrap;gap:14px}
+main.fit .lpbar .lpnav{margin:0;flex:0 0 auto;flex-wrap:nowrap}
+main.fit .lpbar .lpdots{margin-left:auto;white-space:nowrap}
+main.fit .lpt{font-size:clamp(20px,3.6vh,28px);white-space:nowrap}
+main.fit .card.vzc{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;margin:0;padding:8px 12px;overflow:hidden}
+main.fit .card.vzc>h3{margin:0 0 4px;flex:0 0 auto}
+main.fit .vz{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+main.fit .vz .vzsvg,main.fit .card.vzc>.vzsvg{flex:1 1 0;min-height:0;height:100%;max-height:none;width:100%;margin:4px auto}
+main.fit .vzcap{flex:0 0 auto;margin:4px 0}
+main.fit .vzs{flex:1 1 auto;min-height:0;margin:0;justify-content:space-evenly;overflow:auto;font-size:clamp(12px,2.4vh,18px)}
+main.fit .vzb{font-size:1em}
+main.fit .see{flex:1 1 auto;min-height:0;margin:0;display:flex;flex-direction:column;padding:6px 10px}
+main.fit .see>summary{display:none}
+main.fit .seeb{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(230px,30%) 1fr;grid-auto-rows:min-content;column-gap:14px;align-content:start}
+main.fit .seeb>*{grid-column:1}
+main.fit .seeb>.seef{grid-column:2;grid-row:1/span 7;justify-self:center;align-self:start;width:auto;display:inline-block}
+main.fit .seef img{width:auto;height:auto;max-width:100%;max-height:calc(100vh - 230px);max-height:calc(100dvh - 230px)}
+main.fit .seep{font-size:clamp(13px,2.2vh,17px)}
+@media(max-width:880px){main.fit .seeb{display:block}main.fit .seef img{max-height:calc(100dvh - 430px)}main.fit .seeb>.seef{display:block;width:auto;max-width:100%}}
+@media(max-width:600px){main.fit{overflow:auto}main.fit .lpbar{flex-wrap:wrap}main.fit .lpt{white-space:normal}}
 </style></head><body>
 <header class="top"><b>TIB SAP Controls Interview Prep</b><small id="crumb">Weeks 0 to 7</small><a class="jr" href="https://tib-job-readiness-prep.vercel.app/">Job Readiness</a><button id="homeBtn" onclick="go()">Menu</button><button id="docBtn" onclick="docs()" style="display:none;margin-left:0">Guide</button><button id="dashBtn" onclick="dash()" style="display:none;margin-left:0">Instructor view</button><small id="syncW" style="display:none"><span id="sync"></span></small><button id="outBtn" onclick="signOut()" style="display:none;margin-left:0">Sign out</button></header>
 <main id="app"></main>
@@ -1371,7 +1398,7 @@ function home(){
   });
   h+='</div></div>';
   h+=`<details class="mabout"><summary>About this pilot</summary><p class="mut small">The SAP screens are a training simulation, not a live SAP system. The company, users and data are fictional. Your progress is saved to your TIB account, so you can continue on any device. Available now: Weeks 0 to 5 (the Senior track) and the Lead track, Weeks 6 and 7.</p></details></div>`;
-  app.innerHTML=h;app.scrollTop=0;
+  app.classList.remove('fit');app.innerHTML=h;app.scrollTop=0;
 }
 function view(id,step){
   const u=UNITS.find(x=>x.id===id),i=UNITS.indexOf(u);
@@ -1379,7 +1406,7 @@ function view(id,step){
   $('#crumb').textContent='Unit '+u.id;
   const names=['1 Learn','2 Simulate','3 Analyse','4 Teach back','5 Quiz'];
   const dn=[true,simDone(u),labDone(u),tbDone(u),quizDone(u)];
-  let h=`<div class="small mut">${esc(u.wk)}</div><h1 class="utl">Unit ${u.id}. ${u.title}</h1><div class="steps">${names.map((n,k)=>`<button class="${k===step?'on':''} ${dn[k]&&k>0?'dn':''}" onclick="go('${id}',${k})">${n}</button>`).join('')}</div><div id="pane"></div>`;
+  app.classList.remove('fit');let h=`<div class="small mut wkl">${esc(u.wk)}</div><h1 class="utl">Unit ${u.id}. ${u.title}</h1><div class="steps">${names.map((n,k)=>`<button class="${k===step?'on':''} ${dn[k]&&k>0?'dn':''}" onclick="go('${id}',${k})">${n}</button>`).join('')}</div><div id="pane"></div>`;
   app.innerHTML=h;
   [pLearn,pSim,pLab,pTb,pQuiz][step](u);app.scrollTop=0;
 }
@@ -1894,14 +1921,15 @@ function lpSlides(u){const sl=[],id=u.id,V=VIZ[id];
   sl.push({k:'Flowchart',h:()=>{const fl=V.flow;return `<div class="card vzc"><h3>${V.flowT}</h3>${vzSvg(fl.vb,fl.nodes,fl.arrows).replace(/class="n"/g,'class="n on"').replace(/class="vza n"/g,'class="vza n on"')}</div>`}});
   sl.push({k:'Animation',h:()=>`<div class="card vzc"><h3>${V.animT}</h3>${vzAnim(id,V.anim)}</div>`,after:()=>{VZS[id]=0;vzDraw(id)}})}
  sl.push({k:'Read',h:()=>u.learn.map(b=>`<div class="card"><h3>${b.h}</h3><p>${b.p}</p></div>`).join('')+`<div class="callout why"><b>Why interviewers ask:</b> ${u.why}</div>`});
- if(SEE[id])sl.push({k:'See it in SAP',h:()=>`<div class="card">${seeHtml(id)}</div>`,after:()=>seeDraw(id)});
+ if(SEE[id])sl.push({k:'See it in SAP',h:()=>`<div class="card vzc">${seeHtml(id)}</div>`,after:()=>seeDraw(id)});
  if(V)sl.push({k:'Recall',h:()=>`<div class="card vzc"><h3>Test yourself</h3><p>Cover the screen and say the steps in your own words.</p><ol>${V.recall.map(x=>'<li>'+x+'</li>').join('')}</ol></div>`});
  return sl}
 function lpDraw(id){const u=UNITS.find(x=>x.id===id),sl=lpSlides(u),n=sl.length,i=Math.max(0,Math.min(n-1,LP[id]||0));LP[id]=i;
  const dots=sl.map((x,k)=>`<span class="${k===i?'on':k<i?'dn':''}" title="${x.k}"></span>`).join('');
  const last=i===n-1,fwd=last?`<button class="btn" onclick="go('${id}',1)">${u.sim.length?'Next: simulate the SAP screens':'Next: practise'}</button>`:`<button class="btn ${(sl[i].k==='Animation'||sl[i].k==='See it in SAP')?'sec quiet':''}" onclick="lpGo(1)">Continue</button>`;
  const nav=`<div class="row lpnav"><button class="btn sec" onclick="lpGo(-1)" ${i===0?'disabled':''}>Back</button>${fwd}</div>`;
- $('#pane').innerHTML=`<div class="lpbar"><b class="lpt">Screen ${i+1} of ${n}: ${sl[i].k}</b><span class="lpdots">${dots}</span></div>${nav}${sl[i].h()}${nav}`;
+ const fit=['Story','Flowchart','Animation','See it in SAP'].indexOf(sl[i].k)>=0;app.classList.toggle('fit',fit);
+ $('#pane').innerHTML=fit?`<div class="lpbar"><b class="lpt">Screen ${i+1} of ${n}: ${sl[i].k}</b>${nav}<span class="lpdots">${dots}</span></div>${sl[i].h()}`:`<div class="lpbar"><b class="lpt">Screen ${i+1} of ${n}: ${sl[i].k}</b><span class="lpdots">${dots}</span></div>${nav}${sl[i].h()}${nav}`;
  if(sl[i].after)sl[i].after();app.scrollTop=0}
 function lpGo(d){if(LPC){LP[LPC]=(LP[LPC]||0)+d;lpDraw(LPC)}}
 function lpNext(){lpGo(1)}
@@ -1915,7 +1943,7 @@ function docs(k){
     $('#app').innerHTML='<div class="doc"><button class="btn sec" onclick="docs()">&larr; All documents</button> <button class="btn sec" onclick="window.print()">Print or save as PDF</button><h1>'+DOCS[k].t+'</h1>'+DOCS[k].h+'</div>';app.scrollTop=0;return}
   let h='<h1>Documents</h1>';
   Object.keys(DOCS).forEach(i=>{const d=DOCS[i];if(d.staff&&!STAFF)return;h+='<div class="card ucard" style="cursor:pointer" onclick="docs(\''+i+'\')"><div><b>'+d.t+'</b><div class="mut small">'+(d.staff?'Instructors and administrators only':'Read this first: sign-in, how the app works, day-by-day plan')+'</div></div></div>'});
-  $('#app').innerHTML=h;$('#app').scrollTop=0}
+  $('#app').classList.remove('fit');$('#app').innerHTML=h;$('#app').scrollTop=0}
 // ===== SIGN-IN AND PROGRESS (shared TIB Supabase login) =====
 const SB_URL='https://blfgwysgekfqhcafofhe.supabase.co',SB_KEY='sb_publishable_ThLetpd4hj49fjce-kXoFA_v4ghwIqV';
 let SES=null,ME=null,STAFF=false,PT=null;
